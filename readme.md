@@ -11,3 +11,7 @@ Read from Query params:
 req.query
 Read from body: 
 req.body
+
+Run Database:
+"E:\mongodb\bin\mongod.exe" --dbpath="E:\mongodb-data"
+
