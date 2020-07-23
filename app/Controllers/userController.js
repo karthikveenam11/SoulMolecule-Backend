@@ -1,7 +1,10 @@
 let response = require("../Libs/responseLib");
 const Mongoose = require("mongoose");
+let checkLib = require("../Libs/checkLib");
 let userModel = Mongoose.model("users");
+let authModel = Mongoose.model("auth");
 let token = require("../Libs/tokenLib");
+
 let loginUser = (req, res) => {
   let verifyData = (req, res) => {
     return new Promise((resolve, reject) => {
@@ -9,8 +12,15 @@ let loginUser = (req, res) => {
         userModel.findOne({ name: req.body.name }).exec((err, result) => {
           if (result) {
             resolve(result);
-          } else {
-            reject(err);
+          } else if (checkLib.isEmpty(result)) {
+            let apiResponse = response.generate(
+              false,
+              null,
+              404,
+              "User not found! please sign up! "
+            );
+
+            reject(apiResponse);
           }
         });
       } else {
@@ -32,7 +42,7 @@ let loginUser = (req, res) => {
           resolve(userDetails);
         } else {
           let apiResponse = response.generate(
-            false,
+            true,
             null,
             404,
             "Invalid password! please try again"
@@ -51,31 +61,50 @@ let loginUser = (req, res) => {
     });
   };
   let tokengenerate = (data) => {
-    console.log("inside token gen");
-    console.log(data);
-    console.log("end token gen");
     return new Promise((resolve, reject) => {
       token.generateToken(data, (err, res) => {
         if (res) {
-          let apiresponse = response.generate(false, "Token details", 200, {
-            "token:": res,
-            "UserDetails:": data,
-          });
-          resolve(apiresponse);
+          let tokenResponse = { token: res, userDetails: data };
+
+          resolve(tokenResponse);
         } else {
           reject(err);
         }
       });
     });
   };
+  let saveToken = (tokendetails) => {
+    return new Promise((resolve, reject) => {
+      console.log("inside save token gen");
+      console.log(tokendetails.userDetails._id);
+      authModel.findOne(
+        { _id: tokendetails.userDetails._id },
+        (err, result) => {
+          if (err) {
+            let apiResponse = response.generate(
+              false,
+              null,
+              404,
+              "Unable to connect to Internet"
+            );
+            reject(apiResponse);
+          } else if (checkLib.isEmpty(result)) {
+          }
+        }
+      );
+      resolve(tokendetails);
+      // authModel.findOne({})
+    });
+  };
   verifyData(req, res)
     .then(validatePassword)
     .then(tokengenerate)
+    .then(saveToken)
     .then((result) => {
       res.send(result);
     })
     .catch((err) => {
-      res.send(err);
+      res.status(404).send({ error: err });
     });
 };
 let createUser = (req, res) => {
