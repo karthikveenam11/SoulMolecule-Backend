@@ -8,8 +8,8 @@ let token = require("../Libs/tokenLib");
 let loginUser = (req, res) => {
   let verifyData = (req, res) => {
     return new Promise((resolve, reject) => {
-      if (req.body.name) {
-        userModel.findOne({ name: req.body.name }).exec((err, result) => {
+      if (req.body.email) {
+        userModel.findOne({ email: req.body.email }).exec((err, result) => {
           if (result) {
             resolve(result);
           } else if (checkLib.isEmpty(result)) {
@@ -63,8 +63,15 @@ let loginUser = (req, res) => {
   let tokengenerate = (data) => {
     return new Promise((resolve, reject) => {
       token.generateToken(data, (err, res) => {
+        console.log("zz");
+
+        let userObj = data.toObject();
+        console.log(userObj.password);
+        delete userObj.password;
+        delete userObj.phoneNo;
+        delete userObj.__v;
         if (res) {
-          let tokenResponse = { token: res, userDetails: data };
+          let tokenResponse = { token: res, userDetails: userObj };
 
           resolve(tokenResponse);
         } else {
@@ -78,21 +85,45 @@ let loginUser = (req, res) => {
       console.log("inside save token gen");
       console.log(tokendetails.userDetails._id);
       authModel.findOne(
-        { _id: tokendetails.userDetails._id },
+        { userId: tokendetails.userDetails._id },
         (err, result) => {
           if (err) {
-            let apiResponse = response.generate(
-              false,
-              null,
-              404,
-              "Unable to connect to Internet"
-            );
+            let apiResponse = response.generate(false, null, 404, err);
             reject(apiResponse);
           } else if (checkLib.isEmpty(result)) {
+            const createAuth = new authModel({
+              userId: tokendetails.userDetails._id,
+              authToken: tokendetails.token.token,
+              tokenSecret: tokendetails.token.secret,
+              generatedDate: Date.now(),
+            }).save((err, result) => {
+              if (err) {
+                let apiResponse = response.generate(false, null, 404, err);
+                reject(apiResponse);
+              } else {
+                console.log("here token");
+                console.log(tokendetails.userDetails.password);
+                delete tokendetails.token.secret;
+                delete tokendetails.userDetails.password;
+
+                let apiResponse = response.generate(
+                  false,
+                  null,
+                  200,
+                  tokendetails
+                );
+                resolve(apiResponse);
+              }
+            });
+
+            console.log("coming here");
+          } else {
+            delete tokendetails.token.secret;
+            resolve(tokendetails);
           }
         }
       );
-      resolve(tokendetails);
+      //  resolve(tokendetails);
       // authModel.findOne({})
     });
   };

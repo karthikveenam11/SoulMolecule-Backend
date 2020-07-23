@@ -3,8 +3,11 @@ let secret = "smkccss";
 let generateToken = (data, callback) => {
   try {
     console.log(data);
-    var token = jwt.sign(data.toJSON(), secret);
-    callback(null, token);
+    var tokenDetails = {
+      token: jwt.sign(data.toJSON(), secret),
+      secret: secret,
+    };
+    callback(null, tokenDetails);
   } catch (err) {
     callback(err, null);
   }

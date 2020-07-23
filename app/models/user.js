@@ -3,7 +3,6 @@ const mySchema = Mongoose.Schema;
 let userSchema = new mySchema({
   name: {
     type: String,
-    unique: true,
   },
   email: {
     type: String,

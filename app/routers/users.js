@@ -11,6 +11,21 @@ const userRoutes = (app) => {
  *@apiParam {password} password of User.
  * @apiSuccess {String} firstname Firstname of the User.
  * @apiSuccess {String} lastname  Lastname of the User.
+ * @apiSuccessExample {json} Success-Response:{
+    "error": false,
+    "message": null,
+    "status": 200,
+    "data": {
+        "token": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjE5OWVjYjY4MzRiNDUyN2MyODQ4MDgiLCJuYW1lIjoia2FseWFuIiwiZW1haWwiOiJrYWx5YW5AZ21haWwuY29tIiwicGFzc3dvcmQiOiJrYXJ1QDEyMzQiLCJwaG9uZU5vIjo0MzIzNDIzNDIzLCJfX3YiOjAsImlhdCI6MTU5NTUxNDY5NH0.pGlbb-uYYeM3cnwZlBKruBddlLicAm0ViIolQSJup9g"
+        },
+        "userDetails": {
+            "_id": "5f199ecb6834b4527c284808",
+            "name": "kalyan",
+            "email": "kalyan@gmail.com"
+        }
+    }
+}
  */
   app.post(config.apiVersion + "/user/signup", userCon.createUser);
   /**
@@ -24,9 +39,22 @@ const userRoutes = (app) => {
   *@apiParam {number} PhoneNo Phonenumber of User.
  * @apiSuccess {String} firstname Firstname of the User.
  * @apiSuccess {String} lastname  Lastname of the User.
+ *  @apiSuccessExample {json} Success-Response:
+ * {
+    "error": false,
+    "message": null,
+    "status": 200,
+    "data": {
+        "_id": "5f199ecb6834b4527c284808",
+        "name": "kalyan",
+        "email": "kalyan@gmail.com",
+        "password": "karu@1234",
+        "phoneNo": 4323423423,
+        "__v": 0
+    }
+}
  */
 };
-
 
 module.exports = {
   userRoutes: userRoutes,
