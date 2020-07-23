@@ -1,6 +1,7 @@
 let response = require("../Libs/responseLib");
 const Mongoose = require("mongoose");
 let checkLib = require("../Libs/checkLib");
+let passwordLib = require("../Libs/PasswordLib");
 let userModel = Mongoose.model("users");
 let authModel = Mongoose.model("auth");
 let token = require("../Libs/tokenLib");
@@ -38,17 +39,23 @@ let loginUser = (req, res) => {
   let validatePassword = (userDetails) => {
     return new Promise((resolve, reject) => {
       if (req.body.password) {
-        if (req.body.password === userDetails.password) {
-          resolve(userDetails);
-        } else {
-          let apiResponse = response.generate(
-            true,
-            null,
-            404,
-            "Invalid password! please try again"
-          );
-          reject(apiResponse);
-        }
+        passwordLib.verifyPassword(
+          req.body.password,
+          userDetails.password,
+          (res, err) => {
+            if (res) {
+              resolve(userDetails);
+            } else {
+              let apiResponse = response.generate(
+                true,
+                null,
+                404,
+                "Invalid password! please try again"
+              );
+              reject(apiResponse);
+            }
+          }
+        );
       } else {
         let apiResponse = response.generate(
           false,
@@ -142,7 +149,7 @@ let createUser = (req, res) => {
   const createUser = new userModel({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    password: passwordLib.hashPassword(req.body.password),
     phoneNo: req.body.phoneNo,
   }).save((err, result) => {
     if (err) {
