@@ -7,11 +7,12 @@ To get API DOC :
    here : app/routers is address where router file is present
    -o output generated
 
-Read from Query params: 
+Read from Query params:
 req.query
-Read from body: 
+Read from body:
 req.body
 
+whenever u perform db operation, result will be available via second parameter in callback
+(error,result) , not (result,error)
 Run Database:
 "E:\mongodb\bin\mongod.exe" --dbpath="E:\mongodb-data"
-

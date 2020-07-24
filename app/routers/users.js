@@ -1,7 +1,12 @@
 let { config } = require("../config/appConfig");
 let userCon = require("../Controllers/userController");
+let isAuth = require("../Middlewares/authVerify");
 const userRoutes = (app) => {
-  app.post(config.apiVersion + "/user/login", userCon.loginUser);
+  app.post(
+    config.apiVersion + "/user/login",
+    isAuth.authValidation,
+    userCon.loginUser
+  );
   /**
  * @api {post} /user/login
 

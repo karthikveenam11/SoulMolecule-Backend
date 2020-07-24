@@ -2,6 +2,7 @@ let express = require("express");
 let path = require("path");
 let mongoose = require("mongoose");
 let fs = require("fs");
+let routeNotFound = require("./app/Middlewares/routeValidation");
 let { config } = require("./app/config/appConfig");
 const { Router } = require("express");
 const bodyParser = require("body-parser");
@@ -21,7 +22,7 @@ fs.readdirSync(routerPath).forEach(function (file) {
     route.userRoutes(app);
   }
 });
-
+app.use(routeNotFound.routeNotFound);
 console.log(routerPath);
 app.listen(config.PORT, () => {
   mongoose.connect(config.mongodb.url, { useMongoClient: true });
