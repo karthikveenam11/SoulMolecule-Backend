@@ -125,6 +125,11 @@ let loginUser = (req, res) => {
 
             console.log("coming here");
           } else {
+           tokendetails.token.token=  result.authToken;
+            console.log("same token present");
+            console.log(result);
+            console.log("same tokendetails present");
+            console.log(tokendetails.token.token);
             delete tokendetails.token.secret;
             resolve(tokendetails);
           }
