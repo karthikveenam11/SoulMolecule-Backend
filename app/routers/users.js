@@ -4,7 +4,7 @@ let isAuth = require("../Middlewares/authVerify");
 const userRoutes = (app) => {
   app.post(
     config.apiVersion + "/user/login",
-    isAuth.authValidation,
+
     userCon.loginUser
   );
   /**
