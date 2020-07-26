@@ -11,6 +11,9 @@ Read from Query params:
 req.query
 Read from body:
 req.body
+Read from headers
+req.headers
+
 
 whenever u perform db operation, result will be available via second parameter in callback
 (error,result) , not (result,error)

@@ -3,7 +3,6 @@ let path = require("path");
 let mongoose = require("mongoose");
 var cors = require('cors');
 let fs = require("fs");
-let cors = require("cors");
 
 let routeNotFound = require("./app/Middlewares/routeValidation");
 let { config } = require("./app/config/appConfig");

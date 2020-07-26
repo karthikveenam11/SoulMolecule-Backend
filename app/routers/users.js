@@ -59,6 +59,18 @@ const userRoutes = (app) => {
     }
 }
  */
+  app.post(config.apiVersion + "/user/logout", userCon.logout);
+ /**
+ * @api {post} /user/logout
+
+ * @apiGroup logout User
+ *
+ * @apiParam {token} Authorization.
+ *  @apiSuccessExample {json} Success-Response:
+
+ */
+
+
 };
 
 module.exports = {

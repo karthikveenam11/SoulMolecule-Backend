@@ -125,7 +125,7 @@ let loginUser = (req, res) => {
 
             console.log("coming here");
           } else {
-           tokendetails.token.token=  result.authToken;
+            tokendetails.token.token = result.authToken;
             console.log("same token present");
             console.log(result);
             console.log("same tokendetails present");
@@ -166,7 +166,53 @@ let createUser = (req, res) => {
     }
   });
 };
+let logout = (req, res) => {
+  let deleteToken = (req, res) => {
+    return new Promise((resolve, reject) => {
+      if (req.headers.authorization) {
+        authModel.findOneAndDelete(
+          { authToken: req.headers.authorization },
+          (error, result) => {
+            if (result) {
+              let apiResponse = response.generate(
+                true,
+                null,
+                500,
+                "Authorization token deleted successfully"
+              );
+              resolve(apiResponse);
+            } else {
+              let apiResponse = response.generate(
+                true,
+                null,
+                500,
+                "Unable to delete token"
+              );
+              reject(apiResponse);
+            }
+          }
+        );
+      } else {
+        let apiResponse = response.generate(
+          true,
+          null,
+          500,
+          "Please provide Authorization token"
+        );
+        reject(apiResponse);
+      }
+    });
+  };
+  deleteToken(req, res)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      res.status(404).send(err);
+    });
+};
 module.exports = {
   loginUser: loginUser,
   createUser: createUser,
+  logout: logout,
 };
