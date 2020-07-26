@@ -131,7 +131,9 @@ let loginUser = (req, res) => {
             console.log("same tokendetails present");
             console.log(tokendetails.token.token);
             delete tokendetails.token.secret;
-            resolve(tokendetails);
+            let apiResponse = response.generate(false, null, 200, tokendetails);
+
+            resolve(apiResponse);
           }
         }
       );
